@@ -13,17 +13,31 @@ class Game {
         
 
         setInterval( () => {
-            this.obstacleArr.forEach(obstacleInstance => {
-                obstacleInstance.moveDown()
-            });
 
             if(this.time % 60 === 0) {
                 const newObstacle = new Obstacle();
                 this.obstacleArr.push(newObstacle);
             }
 
-            this.time++;
+
+            this.obstacleArr.forEach(obstacleInstance => {
+                obstacleInstance.moveDown()
+            });
+
+
+
+            this.obstacleArr.forEach((obstacleInstance) => {
+                if (this.player.positionX < obstacleInstance.positionX + obstacleInstance.width &&
+                    this.player.positionX  + this.player.width > obstacleInstance.positionX &&
+                    this.player.positionY < obstacleInstance.positionY + obstacleInstance.height &&
+                    this.player.height + this.player.positionY > obstacleInstance.positionY) {
+                        //alert ("game over");
+                }
+            });
+
             
+            this.time++;
+
         }, 50);
     }
     attachEventListeners(){
@@ -42,6 +56,9 @@ class Player {
     constructor(){
         this.positionX = 45;
         this.positionY = 0;
+        this.height = 5;
+        this.width = 20;
+
         this.domElement = null;
         this.createDomElement();
     }
@@ -51,6 +68,9 @@ class Player {
         this.domElement.id = "player";
         this.domElement.style.left = this.positionX + "vw";
         this.domElement.style.bottom = this.positionY + "vh";
+        this.domElement.style.height = this.height + "vw";
+        this.domElement.style.width = this.width + "vh";
+
 
         const boardElm = document.getElementById("board");
         boardElm.appendChild(this.domElement);
@@ -69,6 +89,8 @@ class Obstacle {
     constructor(){
         this.positionX = 45;
         this.positionY = 90;
+        this.width = 20;
+        this.height = 5;
         this.domElement = null;
         this.createDomElement();
     }
@@ -79,6 +101,8 @@ class Obstacle {
         this.domElement.className= "obstacle";
         this.domElement.style.left = this.positionX + "vw";
         this.domElement.style.bottom = this.positionY + "vh";
+        this.domElement.style.height = this.height + "vw";
+        this.domElement.style.width = this.width + "vh";
 
         const boardElm = document.getElementById("board");
         boardElm.appendChild(this.domElement);
