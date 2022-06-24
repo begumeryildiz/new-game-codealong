@@ -21,7 +21,17 @@ class Game {
 
 
             this.obstacleArr.forEach(obstacleInstance => {
-                obstacleInstance.moveDown()
+                obstacleInstance.moveDown();
+                
+                if (obstacleInstance.height + obstacleInstance.positionY < 0) {
+                    const board = document.getElementById("board");
+                    board.removeChild(obstacleInstance.domElement);
+
+                    const index = this.obstacleArr.indexOf(obstacleInstance);
+                    if (index > -1) {
+                        this.obstacleArr.splice(index, 1); 
+                    }
+                }
             });
 
 
@@ -31,7 +41,8 @@ class Game {
                     this.player.positionX  + this.player.width > obstacleInstance.positionX &&
                     this.player.positionY < obstacleInstance.positionY + obstacleInstance.height &&
                     this.player.height + this.player.positionY > obstacleInstance.positionY) {
-                        //alert ("game over");
+                        console.log("game over");
+                        //alert ("game over")
                 }
             });
 
@@ -56,8 +67,8 @@ class Player {
     constructor(){
         this.positionX = 45;
         this.positionY = 0;
-        this.height = 5;
-        this.width = 20;
+        this.height = 10;
+        this.width = 10;
 
         this.domElement = null;
         this.createDomElement();
@@ -68,29 +79,37 @@ class Player {
         this.domElement.id = "player";
         this.domElement.style.left = this.positionX + "vw";
         this.domElement.style.bottom = this.positionY + "vh";
-        this.domElement.style.height = this.height + "vw";
-        this.domElement.style.width = this.width + "vh";
+        this.domElement.style.height = this.height + "vh";
+        this.domElement.style.width = this.width + "vw";
 
 
         const boardElm = document.getElementById("board");
         boardElm.appendChild(this.domElement);
     }
     moveLeft(){
-        this.positionX--;
-        this.domElement.style.left = this.positionX + "vw";
+        
+        if(this.positionX > 0) {
+            this.positionX--;
+            this.domElement.style.left = this.positionX + "vw"; 
+        }
     }
     moveRight(){
-        this.positionX++;
-        this.domElement.style.left = this.positionX + "vw";
+        const boardWidth = document.getElementById("board").offsetWidth;
+        console.log(this.positionX + this.width)
+        if(this.positionX +this.width +1 <= 100) {
+            this.positionX++;
+            this.domElement.style.left = this.positionX + "vw";
+        }
+        
     }   
 }
 
 class Obstacle {
     constructor(){
-        this.positionX = 45;
+        this.width = 10;
+        this.height = 10;
+        this.positionX = Math.floor(Math.random() * (100 - this.width + 1));
         this.positionY = 90;
-        this.width = 20;
-        this.height = 5;
         this.domElement = null;
         this.createDomElement();
     }
@@ -101,8 +120,8 @@ class Obstacle {
         this.domElement.className= "obstacle";
         this.domElement.style.left = this.positionX + "vw";
         this.domElement.style.bottom = this.positionY + "vh";
-        this.domElement.style.height = this.height + "vw";
-        this.domElement.style.width = this.width + "vh";
+        this.domElement.style.height = this.height + "vh";
+        this.domElement.style.width = this.width + "vw";
 
         const boardElm = document.getElementById("board");
         boardElm.appendChild(this.domElement);
